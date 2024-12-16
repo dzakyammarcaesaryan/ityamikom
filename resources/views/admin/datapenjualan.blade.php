@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Data Penjualan -->
-<div class="container-fluid">
+<div class="container-fluid main-content">
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Data Penjualan</h5>
@@ -47,50 +47,105 @@
         </div>
     </div>
 
-    <!-- Data Buku -->
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Data Buku</h5>
-            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tambahBukuModal">
-                <i class="fas fa-plus me-1"></i> Tambah Buku
-            </button>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>ISBN</th>
-                            <th>Judul Buku</th>
-                            <th>Penulis</th>
-                            <th>Kategori</th>
-                            <th>Stok</th>
-                            <th>Harga</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>978-602-1234</td>
-                            <td>Machine Learning Dasar</td>
-                            <td>Dr. Jane Smith</td>
-                            <td>Teknologi</td>
-                            <td>50</td>
-                            <td>Rp 250.000</td>
-                            <td><span class="badge bg-success">Tersedia</span></td>
-                            <td>
-                                <button class="btn btn-info btn-sm"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <!-- Tambahkan baris data lainnya -->
-                    </tbody>
-                </table>
+    <!-- Tombol Tambah Buku -->
+    {{-- <div class="row">
+        <div class="col-12"> --}}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6>Daftar Buku</h6>
+                    <a href="{{ route('admin.buku.create') }}" class="btn btn-primary btn-sm mb-0">
+                        <i class="fas fa-plus"></i> Tambah Buku
+                    </a>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    @if(session('success'))
+                        <div class="alert alert-success text-white mx-4 mt-3">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Gambar</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Judul</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ISBN</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Penulis</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Harga</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Stok</th>
+                                    <th class="text-secondary opacity-7">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(isset($buku) && $buku->count() > 0)
+                                    @foreach($buku as $b)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <img src="{{ asset('/buku/'.$b->gambar) ?? asset('images/default-book.png') }}"
+                                                         class="avatar avatar-sm me-3 " height="80vh"
+                                                         alt="{{ $b->judul }}">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-0 text-sm">{{ $b->judul }}</h6>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs text-secondary mb-0">{{ $b->isbn }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $b->penulis }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs text-secondary mb-0">Rp {{ number_format($b->harga, 0, ',', '.') }}</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm
+                                                    {{ $b->stok > 10 ? 'bg-gradient-success' :
+                                                       ($b->stok > 0 ? 'bg-gradient-warning' : 'bg-gradient-danger') }}">
+                                                    {{ $b->stok }} Stok
+                                                </span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex">
+                                                    <a href="{{ route('admin.buku.edit', $b->id_buku) }}"
+                                                       class="btn btn-link text-warning px-2 mb-0"
+                                                       data-toggle="tooltip"
+                                                       title="Edit Buku">
+                                                        <i class="fas fa-edit text-warning"></i>
+                                                    </a>
+                                                    <form action="{{ route('admin.buku.destroy', $b->id_buku) }}"
+                                                          method="POST"
+                                                          class="d-inline"
+                                                          onsubmit="return confirm('Yakin hapus buku?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                                class="btn btn-link text-danger px-2 mb-0"
+                                                                data-toggle="tooltip"
+                                                                title="Hapus Buku">
+                                                            <i class="fas fa-trash text-danger"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            Tidak ada data buku
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        {{-- </div>
+    </div> --}}
 
     <!-- Data Penerbitan -->
     <div class="card mb-4">
@@ -165,12 +220,8 @@
                         <input type="text" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Kategori</label>
-                        <select class="form-select">
-                            <option>Teknologi</option>
-                            <option>Sains</option>
-                            <option>Bisnis</option>
-                        </select>
+                        <label class="form-label">Deskripsi</label>
+                        <textarea class="form-control" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Stok</label>
@@ -189,7 +240,6 @@
         </div>
     </div>
 </div>
-
 <!-- Modal Tambah Penerbitan -->
 <div class="modal fade" id="tambahPenerbitanModal" tabindex="-1">
     <div class="modal-dialog">
@@ -235,50 +285,12 @@
     </div>
 </div>
 
+@section('scripts')
 <script>
-    // Script untuk menangani aksi pada tabel
-    document.addEventListener('DOMContentLoaded', function() {
-        // Fungsi untuk menangani klik pada tombol aksi
-        function handleActionClick(event) {
-            const action = event.target.closest('button');
-            if (!action) return;
-
-            const row = action.closest('tr');
-            const id = row.cells[0].textContent;
-
-            if (action.classList.contains('btn-info')) {
-                alert('Lihat detail untuk ID: ' + id);
-            } else if (action.classList.contains('btn-warning')) {
-                alert('Edit data untuk ID: ' + id);
-            } else if (action.classList.contains('btn-danger')) {
-                if (confirm('Apakah Anda yakin ingin menghapus data dengan ID: ' + id + '?')) {
-                    alert('Data dengan ID: ' + id + ' telah dihapus');
-                    // Di sini Anda bisa menambahkan logika untuk menghapus baris dari tabel
-                }
-            }
-        }
-
-        // Menambahkan event listener untuk setiap tabel
-        document.querySelectorAll('.table').forEach(table => {
-            table.addEventListener('click', handleActionClick);
-        });
-
-        // Fungsi untuk menangani submit form (bisa ditambahkan nanti)
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            // Logika untuk menyimpan data form
-            alert('Data berhasil disimpan');
-            // Tutup modal setelah menyimpan
-            const modal = event.target.closest('.modal');
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            bsModal.hide();
-        }
-
-        // Menambahkan event listener untuk form di dalam modal
-        document.querySelectorAll('.modal form').forEach(form => {
-            form.addEventListener('submit', handleFormSubmit);
-        });
-    });
+    // Tooltip aktivasi
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 </script>
 @endsection
-

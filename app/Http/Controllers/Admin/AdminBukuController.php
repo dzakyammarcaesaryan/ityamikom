@@ -5,62 +5,115 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Buku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\log;
+
 
 class AdminBukuController extends Controller
 {
-    // Metode untuk menambah buku
-    public function storeBuku(Request $request)
+    public function index()
     {
-        $validatedData = $request->validate([
+        try {
+            $buku = Buku::latest()->get();
+            return view('admin.datapenjualan', compact('buku'));
+        } catch (\Exception $e) {
+            // Log error
+            \Log::error('Error fetching buku: ' . $e->getMessage());
+
+            // Redirect dengan pesan error
+            return redirect()->back()->with('error', 'Gagal memuat data buku');
+        }
+    }
+
+    public function create()
+    {
+        return view('admin.buku.addbuku');
+    }
+
+    public function store(Request $request)
+    {
+        $validasi = $request->validate([
             'isbn' => 'required|unique:buku,isbn',
-            'judul' => 'required|string|max:255',
-            'penulis' => 'required|string|max:255',
-            'kategori' => 'nullable|string|max:100',
-            'stok' => 'required|integer|min:0',
-            'harga' => 'required|numeric|min:0'
+            'judul' => 'required',
+            'penulis' => 'required',
+            'harga' => 'required|numeric',
+            'stok' => 'required|numeric',
+            'deskripsi' => 'nullable',
+            'gambar' => 'nullable|image|max:2048'
         ]);
 
-        try {
-            $buku = Buku::create($validatedData);
+        // Proses upload gambar
+        if ($request->hasFile('gambar')) {
+            $gambar = $request->file('gambar');
+            $namaGambar = time() . '.' . $gambar->getClientOriginalExtension();
+            $gambar->move(public_path('buku'), $namaGambar);
+            $validasi['gambar'] = $namaGambar;
 
-            return redirect()->back()->with('success', 'Buku berhasil ditambahkan');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menambahkan buku: ' . $e->getMessage());
         }
+
+        Buku::create($validasi);
+
+        return redirect()->route('admin.buku.index')
+            ->with('success', 'Buku berhasil ditambahkan');
     }
 
-    // Metode untuk update buku
-    public function updateBuku(Request $request, $id)
+    public function edit(Buku $buku)
     {
-        $validatedData = $request->validate([
-            'isbn' => 'required|unique:buku,isbn,' . $id . ',id_buku',
-            'judul' => 'required|string|max:255',
-            'penulis' => 'required|string|max:255',
-            'kategori' => 'nullable|string|max:100',
-            'stok' => 'required|integer|min:0',
-            'harga' => 'required|numeric|min:0'
+        return view('admin.buku.edit', compact('buku'));
+    }
+
+    public function update(Request $request, Buku $buku)
+    {
+        $validasi = $request->validate([
+            'isbn' => 'required|unique:buku,isbn,' . $buku->id,
+            'judul' => 'required',
+            'penulis' => 'required',
+            'harga' => 'required|numeric',
+            'stok' => 'required|numeric',
+            'deskripsi' => 'nullable',
+            'gambar' => 'nullable|image|max:2048'
         ]);
 
-        try {
-            $buku = Buku::findOrFail($id);
-            $buku->update($validatedData);
+        // Proses upload gambar baru
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($buku->gambar) {
+                Storage::delete('public/buku/' . $buku->gambar);
+            }
 
-            return redirect()->back()->with('success', 'Buku berhasil diupdate');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal update buku: ' . $e->getMessage());
+            $gambar = $request->file('gambar');
+            $namaGambar = time() . '.' . $gambar->getClientOriginalExtension();
+            $gambar->move(public_path('buku'), $namaGambar);
+            $validasi['gambar'] = $namaGambar;
         }
+
+        $buku->update($validasi);
+
+        return redirect()->route('admin.buku.index')
+            ->with('success', 'Buku berhasil diperbarui');
     }
 
-    // Metode untuk menghapus buku
-    public function destroyBuku($id)
+    public function destroy(Buku $buku)
     {
-        try {
-            $buku = Buku::findOrFail($id);
-            $buku->delete();
-
-            return redirect()->back()->with('success', 'Buku berhasil dihapus');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus buku: ' . $e->getMessage());
+        // Hapus gambar jika ada
+        if ($buku->gambar) {
+            Storage::delete('public/buku/' . $buku->gambar);
         }
+
+        $buku->delete();
+
+        return redirect()->route('admin.buku.index')
+            ->with('success', 'Buku berhasil dihapus');
     }
+    public function getGambarUrlAttribute()
+{
+    // Jika tidak ada gambar, gunakan default
+    if (!$this->gambar) {
+        return asset('images/default-book.png');
+    }
+
+    // Sesuaikan path sesuai struktur penyimpanan Anda
+    return asset('storage/buku/' . $this->gambar);
+
+ }
 }
