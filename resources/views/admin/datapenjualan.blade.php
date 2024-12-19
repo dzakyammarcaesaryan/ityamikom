@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Data Penjualan -->
-<div class="container-fluid main-content">
+<div class="container-fluid">
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Data Penjualan</h5>
@@ -52,12 +52,12 @@
         <div class="col-12"> --}}
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6>Daftar Buku</h6>
+                    <h5>Daftar Buku</h5>
                     <a href="{{ route('admin.buku.create') }}" class="btn btn-primary btn-sm mb-0">
                         <i class="fas fa-plus"></i> Tambah Buku
                     </a>
                 </div>
-                <div class="card-body px-0 pt-0 pb-2">
+                <div class="card-body">
                     @if(session('success'))
                         <div class="alert alert-success text-white mx-4 mt-3">
                             {{ session('success') }}
@@ -65,16 +65,16 @@
                     @endif
 
                     <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
+                        <table class="table table-hover align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Gambar</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Judul</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ISBN</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Penulis</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Harga</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Stok</th>
-                                    <th class="text-secondary opacity-7">Aksi</th>
+                                    <th>Gambar</th>
+                                    <th>Judul</th>
+                                    <th>ISBN</th>
+                                    <th>Penulis</th>
+                                    <th>Harga</th>
+                                    <th>Stok</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,8 +100,8 @@
                                             <td>
                                                 <p class="text-xs text-secondary mb-0">Rp {{ number_format($b->harga, 0, ',', '.') }}</p>
                                             </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm
+                                            <td class="text-xs text-secondary mb-0">
+                                                <span class="badge badge-sm text-dark
                                                     {{ $b->stok > 10 ? 'bg-gradient-success' :
                                                        ($b->stok > 0 ? 'bg-gradient-warning' : 'bg-gradient-danger') }}">
                                                     {{ $b->stok }} Stok
@@ -284,6 +284,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 @section('scripts')
 <script>

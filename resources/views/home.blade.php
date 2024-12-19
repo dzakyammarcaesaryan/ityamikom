@@ -42,7 +42,10 @@
     <header class="masthead">
         <div class="container">
             <div class="masthead-subheading">Selamat Datang</div>
-            <div class="masthead-heading text-uppercase">Institut Teknologi Yogyakarta</div>
+            <div class="masthead-heading text-uppercase mb-2">Institut Teknologi Yogyakarta</div>
+            <div class="mb-5">"Standing On The Shoulders Of Giants"</div>
+
+
             <a class="btn btn-primary btn-xl text-uppercase" href="#services">Selengkapnya</a>
         </div>
     </header>
