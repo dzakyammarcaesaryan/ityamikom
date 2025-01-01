@@ -69,11 +69,10 @@
             </a>
         </div>
         <nav class="nav flex-column">
-            <a class="nav-link active" href="#dashboard"><i class="fas fa-home"></i> Dashboard</a>
-            <a class="nav-link" href="{{ url('/datapenjualan') }}"><i class="fas fa-chart-line"></i> Penjualan</a>
-            <a class="nav-link" href=""><i class="fas fa-book"></i> Data Buku</a>
-            <a class="nav-link" href="#publishing"><i class="fas fa-print"></i> Penerbitan</a>
-            <a class="nav-link" href="#authors"><i class="fas fa-users"></i> Authors</a>
+            <a class="nav-link active" href="{{ url('/admin/dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+            <a class="nav-link" href="{{ url('/admin/databuku') }}"><i class="fas fa-chart-line"></i> Data Buku</a>
+            <a class="nav-link" href="{{route("admin.penjualan")}}"><i class="fas fa-book"></i> Peenjualan</a>
+            <a class="nav-link" href="{{route("admin.penerbitan")}}"><i class="fas fa-print"></i> Penerbitan</a>
             <a class="nav-link" href="#settings"><i class="fas fa-cog"></i> Pengaturan</a>
         </nav>
     </div>

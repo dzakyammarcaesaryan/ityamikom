@@ -398,7 +398,7 @@
         const catalogContainer = document.querySelector('#portfolio .row');
         var bookData = []; // Inisialisasi sebagai array kosong
 
-    $.ajax({
+        $.ajax({
         type: 'GET',
         url: '{{ route('data.buku') }}', // Pastikan ini di dalam file Blade
         success: function(data) {

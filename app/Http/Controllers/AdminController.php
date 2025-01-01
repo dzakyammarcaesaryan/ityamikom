@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Buku;
 
 class AdminController extends Controller
 {
@@ -18,6 +19,7 @@ class AdminController extends Controller
         $buku = Buku::all(); // Contoh mengambil semua data buku
         return view('admin.buku', compact('buku')); // Pastikan nama file tampilan sesuai
     }
+
 
     public function penerbitan()
     {
