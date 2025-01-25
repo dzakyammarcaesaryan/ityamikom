@@ -43,9 +43,7 @@
         <div class="container">
             <div class="masthead-subheading">Selamat Datang</div>
             <div class="masthead-heading text-uppercase mb-2">Institut Teknologi Yogyakarta</div>
-            <div class="mb-5">"Standing On The Shoulders Of Giants"</div>
-
-
+            <div class="mb-5">STANDING ON THE SHOULDERS OF GIANTS</div>
             <a class="btn btn-primary btn-xl text-uppercase" href="#services">Selengkapnya</a>
         </div>
     </header>
@@ -167,11 +165,13 @@
                                                 <span id="modalPrice"></span>
                                             </li>
                                         </ul>
-                                        <button class="btn btn-primary btn-xl text-uppercase" id="orderButton"
+                                        <form id="checkoutBuku">
+                                        <button type="submit" class="btn btn-primary btn-xl text-uppercase" id="orderButton"
                                             type="button">
                                             <i class="fas fa-shopping-cart me-1"></i>
                                             Pesan Sekarang
                                         </button>
+                                    </form>
                                     </div>
                                 </div>
                             </div>
@@ -445,6 +445,11 @@
             const button = event.relatedTarget;
             currentBookId = button.getAttribute('data-book-id');
             const book = bookData.find(b => b.id == currentBookId);
+            const checkoutBuku = document.getElementById('checkoutBuku');
+
+            console.log(checkoutBuku);
+
+            checkoutBuku.setAttribute('action', `{{url("/checkout")}}/` + book.id);
 
             // Update modal content
             const modalTitle = this.querySelector('#modalTitle');
@@ -460,7 +465,7 @@
 
         // Handle order button
         const orderButton = document.getElementById('orderButton');
-        const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+        // const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
 
         orderButton.addEventListener('click', function() {
             const portfolioModalInstance = bootstrap.Modal.getInstance(portfolioModal);
