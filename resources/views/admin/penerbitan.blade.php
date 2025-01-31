@@ -89,6 +89,10 @@
                             <option>Revisi</option>
                             <option>Cetak</option>
                         </select>
+                            <!-- Tambah Input File -->
+                        <label for="file">Upload File (PDF)</label>
+                        <input type="file" name="file" accept="application/pdf" required>
+                <button type="submit">Simpan</button>
                     </div>
                 </form>
             </div>
